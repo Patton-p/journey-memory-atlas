@@ -1,0 +1,83 @@
+name: Optimize journey media
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: optimize-media
+  cancel-in-progress: false
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Install media tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install --upgrade pillow
+
+      - name: Compress photographs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageOps
+          root = Path("assets")
+          for path in root.rglob("*"):
+              if not path.is_file() or path.suffix.lower() not in {".jpg", ".jpeg"}:
+                  continue
+              try:
+                  with Image.open(path) as im:
+                      im = ImageOps.exif_transpose(im).convert("RGB")
+                      if max(im.size) > 1800:
+                          im.thumbnail((1800, 1800), Image.Resampling.LANCZOS)
+                      tmp = path.with_name(path.stem + ".optimized.jpg")
+                      im.save(tmp, "JPEG", quality=80, optimize=True, progressive=True, subsampling="4:2:0")
+                  if tmp.stat().st_size < path.stat().st_size:
+                      tmp.replace(path)
+                      print(f"Compressed {path}: {path.stat().st_size:,} bytes")
+                  else:
+                      tmp.unlink()
+                      print(f"Kept original {path}: already smaller")
+              except Exception as e:
+                  print(f"Skipped {path}: {e}")
+          PY
+
+      - name: Compress background music
+        run: |
+          if [ -f assets/Simon.mp3 ]; then
+            ffmpeg -hide_banner -loglevel error -y -i assets/Simon.mp3 -vn -codec:a libmp3lame -b:a 128k -ar 44100 -ac 2 /tmp/Simon-compressed.mp3
+            if [ "$(stat -c%s /tmp/Simon-compressed.mp3)" -lt "$(stat -c%s assets/Simon.mp3)" ]; then
+              mv /tmp/Simon-compressed.mp3 assets/Simon.mp3
+            else
+              rm /tmp/Simon-compressed.mp3
+            fi
+            ls -lh assets/Simon.mp3
+          else
+            echo "assets/Simon.mp3 not found; skipping audio compression"
+          fi
+
+      - name: Commit optimized media
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets
+          if git diff --cached --quiet; then
+            echo "No media changes needed."
+          else
+            git commit -m "Optimize journey photos and background music"
+            git push origin main
+          fi
