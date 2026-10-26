@@ -6,3 +6,76 @@
 
 /* Background music control */
 .music-widget{position:fixed;z-index:1200;right:18px;bottom:18px;display:flex;flex-direction:column;align-items:flex-end;gap:5px}.music-widget button{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(50,95,80,.22);border-radius:999px;background:rgba(251,250,247,.95);color:var(--green);box-shadow:0 5px 20px rgba(30,50,40,.14);backdrop-filter:blur(10px);font-weight:600}.music-note{font-size:19px}.music-widget button.is-playing .music-note{animation:musicPulse 1.3s ease-in-out infinite}.music-credit{display:none;padding:5px 8px;border-radius:8px;background:rgba(251,250,247,.92);font-size:10px;color:var(--muted)}.music-widget:focus-within .music-credit{display:block}.music-credit a{color:inherit}@keyframes musicPulse{50%{transform:scale(1.2);opacity:.65}}@media(max-width:600px){.music-widget{position:fixed;top:149px;left:18px;right:auto;bottom:auto;align-items:flex-start}.music-widget button{padding:9px 12px;font-size:12px}.music-credit{max-width:220px}}
+
+
+/* Desktop journey detail: larger landscape reading window */
+@media (min-width: 1001px) {
+  .detail {
+    width: min(1500px, calc(100vw - 72px));
+    height: min(900px, calc(100dvh - 72px));
+    max-height: calc(100dvh - 72px);
+    left: 50%;
+    right: auto;
+    top: 50%;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(380px, .92fr);
+    grid-template-rows: minmax(0, 1fr);
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 24px 90px #18352e35;
+  }
+  .detail-hero {
+    grid-column: 1;
+    grid-row: 1;
+    height: auto;
+    min-height: 0;
+    background: #d8e0d1;
+    overflow: hidden;
+  }
+  .detail-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .detail-content {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: clamp(28px, 3vw, 48px);
+    scrollbar-width: thin;
+  }
+  .detail h2 {
+    font-size: clamp(27px, 2.2vw, 36px);
+    line-height: 1.45;
+  }
+  .detail-story {
+    font-size: 14px;
+    line-height: 2.05;
+  }
+  .detail-photos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 22px;
+  }
+  .detail-photos img {
+    height: clamp(90px, 10vw, 145px);
+  }
+  .detail .close {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #fffdf0e8;
+    box-shadow: 0 2px 12px #1b30251c;
+    font-size: 26px;
+  }
+}
