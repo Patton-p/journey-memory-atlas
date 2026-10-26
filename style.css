@@ -191,3 +191,66 @@
 @media (max-width: 1000px) {
   .detail-slideshow-controls { display: none; }
 }
+
+/* Mobile journey detail: fixed photo area, scroll story independently */
+@media (max-width: 700px) {
+  .detail {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    overscroll-behavior: contain;
+    height: auto;
+  }
+  .detail-hero {
+    position: relative;
+    flex: 0 0 200px;
+    height: 200px;
+    min-height: 200px;
+    overflow: hidden;
+  }
+  .detail-hero img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .detail-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding: 20px 22px 32px;
+  }
+  .detail-slideshow-controls {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    padding: 5px 9px;
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 999px;
+    color: #fff;
+    background: rgba(28,43,35,.48);
+    backdrop-filter: blur(8px);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .detail-slideshow-controls button {
+    display: grid;
+    place-items: center;
+    width: 27px;
+    height: 27px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,.18);
+    color: #fff;
+    font-size: 22px;
+    line-height: 1;
+  }
+  .detail-hero .gallery-jump { bottom: 10px; left: 10px; }
+}
