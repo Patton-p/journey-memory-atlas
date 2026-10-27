@@ -254,3 +254,17 @@
   }
   .detail-hero .gallery-jump { bottom: 10px; left: 10px; }
 }
+
+
+/* Gentle cross-fade for the journey hero slideshow */
+.detail-hero #detailHeroImage {
+  opacity: 1;
+  transition: opacity 360ms ease-in-out;
+  will-change: opacity;
+}
+.detail-hero #detailHeroImage.is-fading {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .detail-hero #detailHeroImage { transition-duration: 1ms; }
+}
